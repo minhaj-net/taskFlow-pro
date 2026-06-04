@@ -1,0 +1,62 @@
+[
+  {
+    "id": "n1",
+    "userId": "u1",
+    "type": "task_assigned",
+    "title": "New task assigned",
+    "message": "You have been assigned 'Implement offline data sync' in Mobile App v2.",
+    "read": false,
+    "createdAt": "2026-06-04T08:00:00Z",
+    "link": "/dashboard/tasks/t5"
+  },
+  {
+    "id": "n2",
+    "userId": "u1",
+    "type": "project_update",
+    "title": "Project status updated",
+    "message": "API Integration Hub has been marked as Completed.",
+    "read": false,
+    "createdAt": "2026-06-03T16:30:00Z",
+    "link": "/dashboard/projects/p3"
+  },
+  {
+    "id": "n3",
+    "userId": "u1",
+    "type": "deadline_reminder",
+    "title": "Deadline approaching",
+    "message": "Task 'Implement responsive navigation' is due in 2 days.",
+    "read": true,
+    "createdAt": "2026-06-03T09:00:00Z",
+    "link": "/dashboard/tasks/t2"
+  },
+  {
+    "id": "n4",
+    "userId": "u2",
+    "type": "task_completed",
+    "title": "Task completed",
+    "message": "Sam Rivera completed 'Design homepage wireframes'.",
+    "read": false,
+    "createdAt": "2026-06-03T15:00:00Z",
+    "link": "/dashboard/tasks/t1"
+  },
+  {
+    "id": "n5",
+    "userId": "u2",
+    "type": "member_joined",
+    "title": "New team member",
+    "message": "Casey Nguyen joined the Mobile App v2 project.",
+    "read": true,
+    "createdAt": "2026-06-02T11:00:00Z",
+    "link": "/dashboard/team"
+  },
+  {
+    "id": "n6",
+    "userId": "u3",
+    "type": "task_assigned",
+    "title": "New task assigned",
+    "message": "You have been assigned 'Build Button component' in Design System.",
+    "read": false,
+    "createdAt": "2026-06-02T09:30:00Z",
+    "link": "/dashboard/tasks/t9"
+  }
+]

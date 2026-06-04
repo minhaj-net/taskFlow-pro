@@ -1,0 +1,57 @@
+[
+  {
+    "id": "u1",
+    "name": "Alex Morgan",
+    "email": "admin@demo.com",
+    "password": "Admin123",
+    "role": "admin",
+    "avatar": null,
+    "department": "Engineering",
+    "joinedAt": "2024-01-15T09:00:00Z",
+    "isActive": true
+  },
+  {
+    "id": "u2",
+    "name": "Jordan Lee",
+    "email": "manager@demo.com",
+    "password": "Manager123",
+    "role": "manager",
+    "avatar": null,
+    "department": "Product",
+    "joinedAt": "2024-02-10T09:00:00Z",
+    "isActive": true
+  },
+  {
+    "id": "u3",
+    "name": "Sam Rivera",
+    "email": "member@demo.com",
+    "password": "Member123",
+    "role": "member",
+    "avatar": null,
+    "department": "Design",
+    "joinedAt": "2024-03-05T09:00:00Z",
+    "isActive": true
+  },
+  {
+    "id": "u4",
+    "name": "Taylor Kim",
+    "email": "taylor@demo.com",
+    "password": "Taylor123",
+    "role": "member",
+    "avatar": null,
+    "department": "Engineering",
+    "joinedAt": "2024-03-20T09:00:00Z",
+    "isActive": true
+  },
+  {
+    "id": "u5",
+    "name": "Casey Nguyen",
+    "email": "casey@demo.com",
+    "password": "Casey123",
+    "role": "member",
+    "avatar": null,
+    "department": "Marketing",
+    "joinedAt": "2024-04-01T09:00:00Z",
+    "isActive": true
+  }
+]

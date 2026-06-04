@@ -1,26 +1,188 @@
 @import "tailwindcss";
 
+/* ═══════════════════════════════════════════════════════════════
+   DESIGN TOKENS — shadcn/ui-compatible CSS variables
+   These are defined in :root / .dark so next-themes class toggle
+   instantly updates every consumer of bg-background, text-foreground,
+   border-border, bg-card, text-muted-foreground, etc.
+═══════════════════════════════════════════════════════════════ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+
+  /* ── Core surfaces ── */
+  --background:         248 250 252;   /* #F8FAFC */
+  --foreground:         15  23  42;    /* #0F172A */
+  --card:               255 255 255;   /* #FFFFFF */
+  --card-foreground:    15  23  42;    /* #0F172A */
+  --popover:            255 255 255;
+  --popover-foreground: 15  23  42;
+
+  /* ── Brand ── */
+  --primary:            16  185 129;   /* #10B981 emerald-500 */
+  --primary-foreground: 255 255 255;
+
+  /* ── Secondary / accent ── */
+  --secondary:          238 242 255;   /* #EEF2FF indigo-50  */
+  --secondary-foreground: 79 70 229;   /* #4F46E5 indigo-600 */
+  --accent:             238 242 255;
+  --accent-foreground:  79  70  229;
+
+  /* ── Muted ── */
+  --muted:              241 245 249;   /* #F1F5F9 slate-100  */
+  --muted-foreground:   100 116 139;   /* #64748B slate-500  */
+
+  /* ── Status ── */
+  --destructive:        239 68  68;    /* #EF4444 */
+  --destructive-foreground: 255 255 255;
+
+  /* ── Border / input / ring ── */
+  --border:             226 232 240;   /* #E2E8F0 slate-200  */
+  --input:              226 232 240;
+  --ring:               16  185 129;   /* #10B981 */
+
+  /* ── Radius ── */
+  --radius: 0.75rem;
+
+  /* ── TaskFlow brand extras (still used by existing sections) ── */
+  --tf-indigo:          79  70  229;   /* #4F46E5 */
+  --tf-indigo-hover:    67  56  202;   /* #4338CA */
+  --tf-emerald:         16  185 129;   /* #10B981 */
+  --tf-emerald-hover:   5   150 105;   /* #059669 */
 }
 
+.dark {
+  color-scheme: dark;
+
+  --background:         9   9   11;    /* #09090B zinc-950   */
+  --foreground:         250 250 250;   /* #FAFAFA zinc-50    */
+  --card:               24  24  27;    /* #18181B zinc-900   */
+  --card-foreground:    250 250 250;
+  --popover:            24  24  27;
+  --popover-foreground: 250 250 250;
+
+  --primary:            52  211 153;   /* #34D399 emerald-400 */
+  --primary-foreground: 9   9   11;
+
+  --secondary:          39  39  42;    /* #27272A zinc-800   */
+  --secondary-foreground: 161 161 170; /* #A1A1AA zinc-400   */
+  --accent:             39  39  42;
+  --accent-foreground:  250 250 250;
+
+  --muted:              39  39  42;    /* #27272A */
+  --muted-foreground:   161 161 170;   /* #A1A1AA zinc-400   */
+
+  --destructive:        239 68  68;
+  --destructive-foreground: 250 250 250;
+
+  --border:             39  39  42;    /* #27272A zinc-800   */
+  --input:              39  39  42;
+  --ring:               52  211 153;   /* #34D399 */
+
+  --tf-indigo:          99  102 241;   /* #6366F1 indigo-500  */
+  --tf-indigo-hover:    129 140 248;   /* #818CF8 indigo-400  */
+  --tf-emerald:         52  211 153;   /* #34D399 */
+  --tf-emerald-hover:   16  185 129;   /* #10B981 */
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TAILWIND v4 @theme — map CSS vars → Tailwind utility classes
+   Using rgb(...) with /alpha so Tailwind opacity modifiers work.
+═══════════════════════════════════════════════════════════════ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  /* Typography */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Surface tokens */
+  --color-background:           rgb(var(--background));
+  --color-foreground:           rgb(var(--foreground));
+  --color-card:                 rgb(var(--card));
+  --color-card-foreground:      rgb(var(--card-foreground));
+  --color-popover:              rgb(var(--popover));
+  --color-popover-foreground:   rgb(var(--popover-foreground));
+
+  /* Brand */
+  --color-primary:              rgb(var(--primary));
+  --color-primary-foreground:   rgb(var(--primary-foreground));
+
+  /* Secondary / accent */
+  --color-secondary:            rgb(var(--secondary));
+  --color-secondary-foreground: rgb(var(--secondary-foreground));
+  --color-accent:               rgb(var(--accent));
+  --color-accent-foreground:    rgb(var(--accent-foreground));
+
+  /* Muted */
+  --color-muted:                rgb(var(--muted));
+  --color-muted-foreground:     rgb(var(--muted-foreground));
+
+  /* Status */
+  --color-destructive:          rgb(var(--destructive));
+  --color-destructive-foreground: rgb(var(--destructive-foreground));
+
+  /* Border / ring */
+  --color-border:               rgb(var(--border));
+  --color-input:                rgb(var(--input));
+  --color-ring:                 rgb(var(--ring));
+
+  /* TF brand shortcuts */
+  --color-tf-indigo:            rgb(var(--tf-indigo));
+  --color-tf-emerald:           rgb(var(--tf-emerald));
+
+  /* Status colors (static) */
+  --color-success:  #22C55E;
+  --color-warning:  #F59E0B;
+  --color-danger:   #EF4444;
+  --color-info:     #3B82F6;
+
+  /* Border radius */
+  --radius: var(--radius);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ═══════════════════════════════════════════════════════════════
+   BASE STYLES
+═══════════════════════════════════════════════════════════════ */
+html {
+  scroll-padding-top: 4.5rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: rgb(var(--background));
+  color: rgb(var(--foreground));
+  font-family: var(--font-geist-sans, Arial, Helvetica, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background-color: rgb(var(--tf-indigo));
+  color: #ffffff;
+}
+
+:focus-visible {
+  outline: 2px solid rgb(var(--ring));
+  outline-offset: 2px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ACCORDION ANIMATIONS (Radix UI)
+═══════════════════════════════════════════════════════════════ */
+@keyframes accordion-down {
+  from { height: 0; opacity: 0; }
+  to   { height: var(--radix-accordion-content-height); opacity: 1; }
+}
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); opacity: 1; }
+  to   { height: 0; opacity: 0; }
+}
+
+.animate-accordion-down {
+  animation: accordion-down 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.animate-accordion-up {
+  animation: accordion-up 0.22s cubic-bezier(0.22, 1, 0.36, 1);
 }

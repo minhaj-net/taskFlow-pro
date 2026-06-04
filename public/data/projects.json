@@ -1,0 +1,67 @@
+[
+  {
+    "id": "p1",
+    "name": "Website Redesign",
+    "description": "Complete overhaul of the company website with new brand identity and improved UX.",
+    "status": "active",
+    "deadline": "2026-08-15",
+    "createdAt": "2026-05-01T09:00:00Z",
+    "updatedAt": "2026-06-01T10:00:00Z",
+    "ownerId": "u2",
+    "memberIds": ["u2", "u3", "u4"],
+    "taskCount": 12,
+    "completedTaskCount": 5
+  },
+  {
+    "id": "p2",
+    "name": "Mobile App v2",
+    "description": "Feature expansion of the mobile application including offline support and push notifications.",
+    "status": "active",
+    "deadline": "2026-09-30",
+    "createdAt": "2026-04-15T09:00:00Z",
+    "updatedAt": "2026-06-02T14:00:00Z",
+    "ownerId": "u1",
+    "memberIds": ["u1", "u2", "u4", "u5"],
+    "taskCount": 20,
+    "completedTaskCount": 8
+  },
+  {
+    "id": "p3",
+    "name": "API Integration Hub",
+    "description": "Build a centralised API gateway integrating third-party services including Stripe and Twilio.",
+    "status": "completed",
+    "deadline": "2026-05-31",
+    "createdAt": "2026-02-01T09:00:00Z",
+    "updatedAt": "2026-05-30T16:00:00Z",
+    "ownerId": "u2",
+    "memberIds": ["u2", "u4"],
+    "taskCount": 15,
+    "completedTaskCount": 15
+  },
+  {
+    "id": "p4",
+    "name": "Data Analytics Platform",
+    "description": "Internal analytics dashboard for tracking business metrics and team performance.",
+    "status": "on-hold",
+    "deadline": "2026-10-15",
+    "createdAt": "2026-05-10T09:00:00Z",
+    "updatedAt": "2026-05-20T11:00:00Z",
+    "ownerId": "u1",
+    "memberIds": ["u1", "u3", "u5"],
+    "taskCount": 8,
+    "completedTaskCount": 2
+  },
+  {
+    "id": "p5",
+    "name": "Design System",
+    "description": "Establish a comprehensive design system and component library for all products.",
+    "status": "active",
+    "deadline": "2026-07-31",
+    "createdAt": "2026-05-20T09:00:00Z",
+    "updatedAt": "2026-06-03T09:00:00Z",
+    "ownerId": "u2",
+    "memberIds": ["u2", "u3"],
+    "taskCount": 10,
+    "completedTaskCount": 6
+  }
+]
