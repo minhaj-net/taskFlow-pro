@@ -20,46 +20,39 @@ export interface NavItem {
 }
 
 export function getNavItems(role: Role): NavItem[] {
-  // Role-specific home page — exact match so /dashboard/admin doesn't
-  // accidentally highlight when visiting /dashboard/analytics etc.
-  const homeHref =
-    role === 'admin' ? '/dashboard/admin' :
-    role === 'manager' ? '/dashboard/manager' :
-    '/dashboard/member'
-
   if (role === 'admin') return [
-    { label: 'Dashboard',      href: homeHref,                    icon: LayoutDashboard, exact: true },
-    { label: 'Projects',       href: '/dashboard/projects',       icon: FolderKanban  },
-    { label: 'Tasks',          href: '/dashboard/tasks',          icon: CheckSquare   },
-    { label: 'Team',           href: '/dashboard/team',           icon: Users         },
-    { label: 'Users',          href: '/dashboard/users',          icon: ShieldCheck   },
-    { label: 'Analytics',      href: '/dashboard/analytics',      icon: BarChart3     },
-    { label: 'Activity',       href: '/dashboard/activity',       icon: History       },
-    { label: 'Notifications',  href: '/dashboard/notifications',  icon: Bell          },
-    { label: 'Profile',        href: '/dashboard/profile',        icon: UserCircle    },
-    { label: 'Settings',       href: '/dashboard/settings',       icon: Settings      },
+    { label: 'Dashboard',     href: '/',                          icon: LayoutDashboard, exact: true },
+    { label: 'Projects',      href: '/dashboard/projects',        icon: FolderKanban  },
+    { label: 'Tasks',         href: '/dashboard/tasks',           icon: CheckSquare   },
+    { label: 'Team',          href: '/dashboard/team',            icon: Users         },
+    { label: 'Users',         href: '/dashboard/users',           icon: ShieldCheck   },
+    { label: 'Analytics',     href: '/dashboard/analytics',       icon: BarChart3     },
+    { label: 'Activity',      href: '/dashboard/activity',        icon: History       },
+    { label: 'Notifications', href: '/dashboard/notifications',   icon: Bell          },
+    { label: 'Profile',       href: '/dashboard/profile',         icon: UserCircle    },
+    { label: 'Settings',      href: '/dashboard/settings',        icon: Settings      },
   ]
 
   if (role === 'manager') return [
-    { label: 'Dashboard',      href: homeHref,                    icon: LayoutDashboard, exact: true },
-    { label: 'Projects',       href: '/dashboard/projects',       icon: FolderKanban  },
-    { label: 'Tasks',          href: '/dashboard/tasks',          icon: CheckSquare   },
-    { label: 'Team',           href: '/dashboard/team',           icon: Users         },
-    { label: 'Analytics',      href: '/dashboard/analytics',      icon: BarChart3     },
-    { label: 'Activity',       href: '/dashboard/activity',       icon: History       },
-    { label: 'Notifications',  href: '/dashboard/notifications',  icon: Bell          },
-    { label: 'Profile',        href: '/dashboard/profile',        icon: UserCircle    },
-    { label: 'Settings',       href: '/dashboard/settings',       icon: Settings      },
+    { label: 'Dashboard',     href: '/',                          icon: LayoutDashboard, exact: true },
+    { label: 'Projects',      href: '/dashboard/projects',        icon: FolderKanban  },
+    { label: 'Tasks',         href: '/dashboard/tasks',           icon: CheckSquare   },
+    { label: 'Team',          href: '/dashboard/team',            icon: Users         },
+    { label: 'Analytics',     href: '/dashboard/analytics',       icon: BarChart3     },
+    { label: 'Activity',      href: '/dashboard/activity',        icon: History       },
+    { label: 'Notifications', href: '/dashboard/notifications',   icon: Bell          },
+    { label: 'Profile',       href: '/dashboard/profile',         icon: UserCircle    },
+    { label: 'Settings',      href: '/dashboard/settings',        icon: Settings      },
   ]
 
   // member
   return [
-    { label: 'Dashboard',      href: homeHref,                    icon: LayoutDashboard, exact: true },
-    { label: 'My Tasks',       href: '/dashboard/tasks',          icon: CheckSquare   },
-    { label: 'My Projects',    href: '/dashboard/projects',       icon: FolderKanban  },
-    { label: 'Notifications',  href: '/dashboard/notifications',  icon: Bell          },
-    { label: 'Profile',        href: '/dashboard/profile',        icon: UserCircle    },
-    { label: 'Settings',       href: '/dashboard/settings',       icon: Settings      },
+    { label: 'Dashboard',     href: '/',                          icon: LayoutDashboard, exact: true },
+    { label: 'My Tasks',      href: '/dashboard/tasks',           icon: CheckSquare   },
+    { label: 'My Projects',   href: '/dashboard/projects',        icon: FolderKanban  },
+    { label: 'Notifications', href: '/dashboard/notifications',   icon: Bell          },
+    { label: 'Profile',       href: '/dashboard/profile',         icon: UserCircle    },
+    { label: 'Settings',      href: '/dashboard/settings',        icon: Settings      },
   ]
 }
 
@@ -71,14 +64,14 @@ interface Props {
 }
 
 export default function DashboardNav({ role, collapsed, onToggle }: Props) {
-  const pathname  = usePathname()
-  const navItems  = getNavItems(role)
+  const pathname = usePathname()
+  const navItems = getNavItems(role)
 
   return (
     <aside
       className={cn(
         'flex flex-col border-r border-border bg-card transition-all duration-300 ease-in-out',
-        'fixed inset-y-0 left-0 z-30 md:static',
+        'h-full',
         collapsed ? 'w-16' : 'w-60',
       )}
       aria-label="Sidebar navigation"
@@ -117,7 +110,6 @@ export default function DashboardNav({ role, collapsed, onToggle }: Props) {
         aria-label="Dashboard navigation"
       >
         {navItems.map(({ label, href, icon: Icon, exact }) => {
-          // exact match for the home link; prefix match for sub-pages
           const isActive = exact
             ? pathname === href
             : pathname === href || pathname.startsWith(href + '/')

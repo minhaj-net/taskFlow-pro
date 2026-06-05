@@ -10,11 +10,11 @@ import type { User } from '@/types'
 import { cn } from '@/lib/utils'
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const router  = useRouter()
-  const [user,   setUser]              = useState<User | null>(null)
-  const [collapsed, setCollapsed]      = useState(false)
-  const [mobileOpen, setMobileOpen]    = useState(false)
-  const [mounted, setMounted]          = useState(false)
+  const router = useRouter()
+  const [user,       setUser]       = useState<User | null>(null)
+  const [collapsed,  setCollapsed]  = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const [mounted,    setMounted]    = useState(false)
 
   useEffect(() => {
     setMounted(true)
@@ -31,19 +31,24 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const closeMobile = useCallback(() => setMobileOpen(false), [])
 
-  /* ── Loading / auth guard ─────────────────────────────────── */
+  /* ── Loading / auth guard ──────────────────────────────── */
   if (!mounted || !user) {
     return (
-      <div className="flex min-h-[100dvh] items-center justify-center bg-background">
+      <div className="flex h-[100dvh] items-center justify-center bg-background">
         <div className="h-8 w-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
       </div>
     )
   }
 
   return (
-    <div className="flex min-h-[100dvh] bg-background overflow-hidden">
+    /**
+     * Root shell: fixed viewport height, no overflow.
+     * Everything inside must fit within this box —
+     * only <main> is allowed to scroll.
+     */
+    <div className="flex h-[100dvh] overflow-hidden bg-background">
 
-      {/* ── Mobile drawer backdrop ──────────────────────────── */}
+      {/* ── Mobile drawer backdrop ─────────────────────────── */}
       {mobileOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"
@@ -52,25 +57,28 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         />
       )}
 
-      {/* ── Sidebar ─────────────────────────────────────────── */}
-      {/* Desktop: always visible as flex child (no fixed)       */}
-      {/* Mobile:  drawer sliding in from left (fixed)           */}
+      {/* ── Mobile sidebar (drawer) ────────────────────────── */}
+      {/* Slides in from left on mobile; completely outside layout flow */}
       <div
         className={cn(
-          // Mobile: fixed drawer
-          'fixed inset-y-0 left-0 z-50 transition-transform duration-300 md:hidden',
+          'fixed inset-y-0 left-0 z-50 md:hidden transition-transform duration-300 ease-in-out',
           mobileOpen ? 'translate-x-0' : '-translate-x-full',
         )}
       >
-        <DashboardNav
-          role={user.role}
-          collapsed={false}            // mobile drawer is always expanded
-          onToggle={closeMobile}
-        />
+        {/* Mobile nav is always expanded, full height, its own scroll */}
+        <div className="h-full overflow-y-auto">
+          <DashboardNav
+            role={user.role}
+            collapsed={false}
+            onToggle={closeMobile}
+          />
+        </div>
       </div>
 
-      {/* Desktop sidebar — static flex child, never fixed */}
-      <div className="hidden md:flex flex-shrink-0">
+      {/* ── Desktop sidebar ────────────────────────────────── */}
+      {/* Static flex child — never scrolls the page,           */}
+      {/* its own overflow-y-auto handles long nav lists.       */}
+      <div className="hidden md:flex flex-shrink-0 h-full overflow-y-auto">
         <DashboardNav
           role={user.role}
           collapsed={collapsed}
@@ -78,17 +86,28 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         />
       </div>
 
-      {/* ── Main content area ───────────────────────────────── */}
-      <div className="flex flex-1 flex-col min-w-0 overflow-hidden">
-        <DashboardTopbar
-          user={user}
-          unreadCount={unreadCount}
-          onMobileMenuOpen={() => setMobileOpen(true)}
-        />
+      {/* ── Right column: topbar + scrollable content ──────── */}
+      {/*
+       * flex-col + overflow-hidden so:
+       *   • Topbar stays pinned at top (flex-shrink-0)
+       *   • <main> gets the remaining height and scrolls solo
+       */}
+      <div className="flex flex-1 flex-col min-w-0 overflow-hidden h-full">
 
+        {/* Topbar — never scrolls */}
+        <div className="flex-shrink-0">
+          <DashboardTopbar
+            user={user}
+            unreadCount={unreadCount}
+            onMobileMenuOpen={() => setMobileOpen(true)}
+          />
+        </div>
+
+        {/* Main content — the ONLY scrollable region */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-6">
           {children}
         </main>
+
       </div>
     </div>
   )

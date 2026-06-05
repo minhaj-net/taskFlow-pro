@@ -12,8 +12,9 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl)
   }
 
-  // 2. If authenticated and trying to access public auth paths, redirect to dashboard
-  if ((path === '/' || path === '/login' || path === '/register') && hasAuth) {
+  // 2. If authenticated and trying to access login/register, redirect to dashboard
+  //    (but allow / so logged-in users can visit the marketing homepage)
+  if ((path === '/login' || path === '/register') && hasAuth) {
     const role = roleCookie || 'member'
     const dashboardPath = role === 'admin' ? '/dashboard/admin' : role === 'manager' ? '/dashboard/manager' : '/dashboard/member'
     return NextResponse.redirect(new URL(dashboardPath, request.url))
@@ -60,7 +61,6 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/',
     '/login',
     '/register',
     '/dashboard/:path*',
