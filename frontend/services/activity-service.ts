@@ -1,39 +1,54 @@
-import type { ActivityLog, ActivityAction, ActivityEntityType } from '@/types'
+/**
+ * services/activity-service.ts
+ * All activity data now comes from the real backend API.
+ */
 
-const BASE = '/data'
-const STORAGE_KEY = 'tfp_activity_logs'
+import type { ActivityLog, ActivityAction, ActivityEntityType, Role } from '@/types'
+import { getToken, getCurrentUser } from '@/lib/auth'
 
-function getLocalLogs(): ActivityLog[] | null {
-  if (typeof window === 'undefined') return null
-  const data = localStorage.getItem(STORAGE_KEY)
-  return data ? JSON.parse(data) : null
-}
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'
 
-function saveLocalLogs(logs: ActivityLog[]) {
-  if (typeof window === 'undefined') return
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(logs))
-}
-
-export async function getActivityLogs(): Promise<ActivityLog[]> {
-  const local = getLocalLogs()
-  if (local) {
-    return local.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+function authHeaders(): HeadersInit {
+  const token = getToken()
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
   }
-
-  const res = await fetch(`${BASE}/activity-logs.json`)
-  if (!res.ok) throw new Error('Failed to fetch activity logs')
-  const logs: ActivityLog[] = await res.json()
-  saveLocalLogs(logs)
-  return logs.sort(
-    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
-  )
 }
 
+async function handleResponse<T>(res: Response): Promise<T> {
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.message || `Request failed: ${res.status}`)
+  return json
+}
+
+// ── GET /api/activities ───────────────────────────────────────
+export async function getActivityLogs(limit = 100): Promise<ActivityLog[]> {
+  const res = await fetch(`${API_BASE}/activities?limit=${limit}`, { headers: authHeaders() })
+  const json = await handleResponse<{ success: boolean; data: ActivityLog[] }>(res)
+  return json.data
+}
+
+// ── GET /api/activities/role/:role ────────────────────────────
+export async function getActivitiesByRole(role: Role, limit = 100): Promise<ActivityLog[]> {
+  const res = await fetch(`${API_BASE}/activities/role/${role}?limit=${limit}`, { headers: authHeaders() })
+  const json = await handleResponse<{ success: boolean; data: ActivityLog[] }>(res)
+  return json.data
+}
+
+// ── GET /api/activities/user/:userId ──────────────────────────
+export async function getActivitiesByUser(userId: string, limit = 50): Promise<ActivityLog[]> {
+  const res = await fetch(`${API_BASE}/activities/user/${userId}?limit=${limit}`, { headers: authHeaders() })
+  const json = await handleResponse<{ success: boolean; data: ActivityLog[] }>(res)
+  return json.data
+}
+
+// ── GET recent (wrapper) ──────────────────────────────────────
 export async function getRecentActivity(limit = 10): Promise<ActivityLog[]> {
-  const logs = await getActivityLogs()
-  return logs.slice(0, limit)
+  return getActivityLogs(limit)
 }
 
+// ── POST /api/activities — log a new activity ─────────────────
 export async function logActivity(
   userId: string,
   userName: string,
@@ -42,17 +57,23 @@ export async function logActivity(
   entityName: string,
   entityId: string,
 ): Promise<ActivityLog> {
-  const logs = await getActivityLogs()
-  const newLog: ActivityLog = {
-    id: `act-${Date.now()}`,
-    userId,
-    userName,
-    action,
-    entityType,
-    entityName,
-    entityId,
-    timestamp: new Date().toISOString(),
-  }
-  saveLocalLogs([newLog, ...logs])
-  return newLog
+  const user = getCurrentUser()
+  const userRole = user?.role ?? 'member'
+
+  const res = await fetch(`${API_BASE}/activities`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ userId, userName, userRole, action, entityType, entityName, entityId }),
+  })
+  const json = await handleResponse<{ success: boolean; data: ActivityLog }>(res)
+  return json.data
+}
+
+// ── DELETE /api/activities/:id ────────────────────────────────
+export async function deleteActivityLog(id: string): Promise<void> {
+  const res = await fetch(`${API_BASE}/activities/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  })
+  await handleResponse<{ success: boolean }>(res)
 }

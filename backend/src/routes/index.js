@@ -6,13 +6,18 @@
 const express = require("express");
 const router = express.Router();
 
-const authRoutes    = require("./auth.routes");
-const projectRoutes = require("./project.routes");
+const authRoutes         = require("./auth.routes");
+const projectRoutes      = require("./project.routes");
+const taskRoutes         = require("./task.routes");
+const userRoutes         = require("./user.routes");
+const activityRoutes     = require("./activity.routes");
+const notificationRoutes = require("./notification.routes");
 
-// Mount auth routes at /api/auth
-router.use("/auth", authRoutes);
-
-// Mount project routes at /api/projects
-router.use("/projects", projectRoutes);
+router.use("/auth",          authRoutes);
+router.use("/projects",      projectRoutes);
+router.use("/tasks",         taskRoutes);
+router.use("/users",         userRoutes);
+router.use("/activities",    activityRoutes);
+router.use("/notifications", notificationRoutes);
 
 module.exports = router;

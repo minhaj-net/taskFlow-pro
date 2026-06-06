@@ -4,6 +4,9 @@
  */
 
 const Project = require("../models/Project");
+const {
+  onProjectCreated, onProjectUpdated, onProjectCompleted,
+} = require("../utils/notificationHelper");
 
 // ─── @desc    Get all projects
 // ─── @route   GET /api/projects
@@ -73,6 +76,15 @@ const createProject = async (req, res, next) => {
       message: "Project created successfully",
       data: project,
     });
+
+    // Fire notifications after response (non-blocking)
+    onProjectCreated({
+      projectName:     name,
+      projectId:       project._id.toString(),
+      memberIds:       memberIds || [],
+      triggeredById:   req.user._id.toString(),
+      triggeredByName: req.user.name,
+    }).catch(() => {});
   } catch (error) {
     next(error);
   }
@@ -110,6 +122,25 @@ const updateProject = async (req, res, next) => {
       message: "Project updated successfully",
       data: updated,
     });
+
+    // Fire notifications after response
+    if (status === "completed" && updated.status === "completed") {
+      onProjectCompleted({
+        projectName:     updated.name,
+        projectId:       updated._id.toString(),
+        memberIds:       updated.memberIds,
+        triggeredById:   req.user._id.toString(),
+        triggeredByName: req.user.name,
+      }).catch(() => {});
+    } else {
+      onProjectUpdated({
+        projectName:     updated.name,
+        projectId:       updated._id.toString(),
+        memberIds:       updated.memberIds,
+        triggeredById:   req.user._id.toString(),
+        triggeredByName: req.user.name,
+      }).catch(() => {});
+    }
   } catch (error) {
     next(error);
   }

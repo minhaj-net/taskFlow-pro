@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   FolderKanban, Plus, Search, Filter, ArrowUpDown, Edit3, Trash2,
-  Calendar, CheckCircle2, Clock, AlertCircle, X, Users, RefreshCw
+  Calendar, CheckCircle2, Clock, AlertCircle, X, Users, RefreshCw, ExternalLink
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { getSession } from '@/lib/auth'
@@ -363,7 +363,7 @@ export default function ProjectsPage() {
                         className="p-1.5 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
                         title="View details"
                       >
-                        <Users size={14} />
+                        <ExternalLink size={14} />
                       </a>
                       {canManage && (
                         <>

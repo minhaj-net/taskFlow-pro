@@ -31,7 +31,11 @@ const register = async (req, res, next) => {
     }
 
     // Create user — password is hashed automatically via pre-save hook
-    await User.create({ name, email, password });
+    const newUser = await User.create({ name, email, password });
+
+    // Notify admins about new registration
+    const { onUserRegistered } = require("../utils/notificationHelper");
+    onUserRegistered({ newUserName: name, triggeredById: newUser._id.toString() }).catch(() => {});
 
     res.status(201).json({
       success: true,
@@ -95,4 +99,37 @@ const getProfile = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login, getProfile };
+// ─── @desc    Change password (authenticated user)
+// ─── @route   PUT /api/auth/change-password
+// ─── @access  Private
+const changePassword = async (req, res, next) => {
+  try {
+    const { currentPassword, newPassword } = req.body
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ success: false, message: 'currentPassword and newPassword are required' })
+    }
+    if (newPassword.length < 6) {
+      return res.status(400).json({ success: false, message: 'New password must be at least 6 characters' })
+    }
+
+    const user = await User.findById(req.user._id).select('+password')
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' })
+    }
+
+    const isMatch = await user.matchPassword(currentPassword)
+    if (!isMatch) {
+      return res.status(401).json({ success: false, message: 'Current password is incorrect' })
+    }
+
+    user.password = newPassword // pre-save hook will hash it
+    await user.save()
+
+    res.status(200).json({ success: true, message: 'Password changed successfully' })
+  } catch (error) {
+    next(error)
+  }
+}
+
+module.exports = { register, login, getProfile, changePassword }

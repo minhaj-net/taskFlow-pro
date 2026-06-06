@@ -21,10 +21,23 @@ const app = express();
 // Set secure HTTP headers
 app.use(helmet());
 
-// Enable CORS — restrict origins via env in production
+// Enable CORS — allow both Vercel deployment and local dev
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'https://taskflowpro12.vercel.app',
+  'https://frontend-obwqapxkj-minhajs-projects-50f18244.vercel.app',
+].filter(Boolean)
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "*",
+    origin: (origin, callback) => {
+      // Allow requests with no origin (Postman, server-to-server)
+      if (!origin) return callback(null, true)
+      if (allowedOrigins.includes(origin)) return callback(null, true)
+      return callback(new Error(`CORS: origin ${origin} not allowed`))
+    },
     credentials: true,
   })
 );

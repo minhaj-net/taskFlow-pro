@@ -140,7 +140,8 @@ export default function Navbar() {
 
             {/* Notification bell */}
             <div className="relative">
-              <button
+              <Link
+                href={isLoggedIn ? "/dashboard/notifications" : "/login"}
                 aria-label={`Notifications${NOTIFICATION_COUNT > 0 ? `, ${NOTIFICATION_COUNT} unread` : ''}`}
                 title="Notifications"
                 className={cn(
@@ -160,7 +161,7 @@ export default function Navbar() {
                     {NOTIFICATION_COUNT > 9 ? '9+' : NOTIFICATION_COUNT}
                   </span>
                 )}
-              </button>
+              </Link>
             </div>
 
             {/* Theme toggle */}

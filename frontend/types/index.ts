@@ -65,9 +65,15 @@ export interface Task {
 export type NotificationType =
   | 'task_assigned'
   | 'task_completed'
-  | 'project_update'
-  | 'deadline_reminder'
+  | 'task_updated'
+  | 'task_overdue'
+  | 'project_created'
+  | 'project_updated'
+  | 'project_completed'
   | 'member_joined'
+  | 'member_removed'
+  | 'deadline_reminder'
+  | 'role_changed'
 
 export interface Notification {
   id: string

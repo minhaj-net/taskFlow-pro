@@ -1,81 +1,91 @@
-import type { Task, TaskStatus, TaskPriority } from '@/types'
+/**
+ * services/task-service.ts
+ * All task data now comes from the real backend API.
+ * localStorage mock replaced with fetch calls to /api/tasks.
+ */
 
-const BASE = '/data'
-const STORAGE_KEY = 'tfp_tasks'
+import type { Task } from '@/types'
+import { getToken } from '@/lib/auth'
 
-function getLocalTasks(): Task[] | null {
-  if (typeof window === 'undefined') return null
-  const data = localStorage.getItem(STORAGE_KEY)
-  return data ? JSON.parse(data) : null
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'
+
+// ── Auth headers ──────────────────────────────────────────────────────────────
+function authHeaders(): HeadersInit {
+  const token = getToken()
+  return {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+  }
 }
 
-function saveLocalTasks(tasks: Task[]) {
-  if (typeof window === 'undefined') return
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks))
+// ── Response handler ──────────────────────────────────────────────────────────
+async function handleResponse<T>(res: Response): Promise<T> {
+  const json = await res.json()
+  if (!res.ok) throw new Error(json.message || `Request failed: ${res.status}`)
+  return json
 }
 
+// ── GET /api/tasks ────────────────────────────────────────────────────────────
 export async function getTasks(): Promise<Task[]> {
-  const local = getLocalTasks()
-  if (local) return local
-
-  const res = await fetch(`${BASE}/tasks.json`)
-  if (!res.ok) throw new Error('Failed to fetch tasks')
-  const data = await res.json()
-  saveLocalTasks(data)
-  return data
+  const res = await fetch(`${API_BASE}/tasks`, { headers: authHeaders() })
+  const json = await handleResponse<{ success: boolean; data: Task[] }>(res)
+  return json.data
 }
 
+// ── GET /api/tasks/:id ────────────────────────────────────────────────────────
 export async function getTaskById(id: string): Promise<Task | undefined> {
-  const tasks = await getTasks()
-  return tasks.find((t) => t.id === id)
+  const res = await fetch(`${API_BASE}/tasks/${id}`, { headers: authHeaders() })
+  if (res.status === 404) return undefined
+  const json = await handleResponse<{ success: boolean; data: Task }>(res)
+  return json.data
 }
 
+// ── GET /api/tasks/project/:projectId ────────────────────────────────────────
 export async function getTasksByProject(projectId: string): Promise<Task[]> {
-  const tasks = await getTasks()
-  return tasks.filter((t) => t.projectId === projectId)
+  const res = await fetch(`${API_BASE}/tasks/project/${projectId}`, { headers: authHeaders() })
+  const json = await handleResponse<{ success: boolean; data: Task[] }>(res)
+  return json.data
 }
 
+// ── GET /api/tasks/assignee/:userId ──────────────────────────────────────────
 export async function getTasksByAssignee(userId: string): Promise<Task[]> {
-  const tasks = await getTasks()
-  return tasks.filter((t) => t.assigneeId === userId)
+  const res = await fetch(`${API_BASE}/tasks/assignee/${userId}`, { headers: authHeaders() })
+  const json = await handleResponse<{ success: boolean; data: Task[] }>(res)
+  return json.data
 }
 
+// ── POST /api/tasks ───────────────────────────────────────────────────────────
 export async function createTask(
   data: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'comments'>,
 ): Promise<Task> {
-  await new Promise((r) => setTimeout(r, 400))
-  const tasks = await getTasks()
-  const newTask: Task = {
-    ...data,
-    id: `t-${Date.now()}`,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    comments: [],
-  }
-  saveLocalTasks([...tasks, newTask])
-  return newTask
+  const res = await fetch(`${API_BASE}/tasks`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  })
+  const json = await handleResponse<{ success: boolean; data: Task }>(res)
+  return json.data
 }
 
+// ── PUT /api/tasks/:id ────────────────────────────────────────────────────────
 export async function updateTask(
   id: string,
   data: Partial<Pick<Task, 'title' | 'description' | 'assigneeId' | 'priority' | 'status' | 'dueDate' | 'comments'>>,
 ): Promise<Task> {
-  await new Promise((r) => setTimeout(r, 400))
-  const tasks = await getTasks()
-  const index = tasks.findIndex((t) => t.id === id)
-  if (index === -1) throw new Error(`Task ${id} not found`)
-  const updated = {
-    ...tasks[index],
-    ...data,
-    updatedAt: new Date().toISOString()
-  }
-  tasks[index] = updated
-  saveLocalTasks(tasks)
-  return updated
+  const res = await fetch(`${API_BASE}/tasks/${id}`, {
+    method: 'PUT',
+    headers: authHeaders(),
+    body: JSON.stringify(data),
+  })
+  const json = await handleResponse<{ success: boolean; data: Task }>(res)
+  return json.data
 }
 
+// ── DELETE /api/tasks/:id ─────────────────────────────────────────────────────
 export async function deleteTask(id: string): Promise<void> {
-  await new Promise((r) => setTimeout(r, 300))
-  const tasks = await getTasks()
-  saveLocalTasks(tasks.filter((t) => t.id !== id))
+  const res = await fetch(`${API_BASE}/tasks/${id}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  })
+  await handleResponse<{ success: boolean }>(res)
 }

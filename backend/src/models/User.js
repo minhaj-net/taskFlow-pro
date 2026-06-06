@@ -30,8 +30,21 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["user", "manager", "admin"],
-      default: "user",
+      enum: ["admin", "manager", "member"],
+      default: "member",
+    },
+    avatar: {
+      type: String,
+      default: null,
+    },
+    department: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
     },
   },
   {
@@ -61,9 +74,14 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 userSchema.methods.toPublicJSON = function () {
   return {
     _id: this._id,
+    id: this._id.toString(),
     name: this.name,
     email: this.email,
     role: this.role,
+    avatar: this.avatar ?? null,
+    department: this.department ?? '',
+    joinedAt: this.createdAt ? new Date(this.createdAt).toISOString() : new Date().toISOString(),
+    isActive: true,
     createdAt: this.createdAt,
     updatedAt: this.updatedAt,
   };

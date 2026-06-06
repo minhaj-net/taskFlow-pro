@@ -1,6 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import Link from 'next/link'
 import { ArrowRight, Play, CheckCircle2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -128,8 +129,8 @@ export default function CTASection() {
               className="flex flex-col sm:flex-row items-center gap-4"
             >
               {/* Primary */}
-              <a
-                href="/signup"
+              <Link
+                href="/register"
                 className={cn(
                   'group inline-flex items-center gap-2.5 px-8 py-3.5 rounded-xl',
                   'text-sm font-semibold text-primary-foreground',
@@ -143,15 +144,12 @@ export default function CTASection() {
                 )}
               >
                 Start Free
-                <ArrowRight
-                  size={16}
-                  className="group-hover:translate-x-1 transition-transform duration-200"
-                />
-              </a>
+                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-200" />
+              </Link>
 
               {/* Secondary */}
-              <a
-                href="/demo"
+              <Link
+                href="/login"
                 className={cn(
                   'group inline-flex items-center gap-2.5 px-8 py-3.5 rounded-xl',
                   'text-sm font-semibold text-foreground',
@@ -164,8 +162,8 @@ export default function CTASection() {
                 )}
               >
                 <Play size={14} className="text-primary" fill="currentColor" />
-                Book Demo
-              </a>
+                Demo Login
+              </Link>
             </motion.div>
           </div>
         </motion.div>
