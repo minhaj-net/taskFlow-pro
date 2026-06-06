@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useId } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -154,6 +155,7 @@ function FormInput({ id, label, type, value, onChange, placeholder, error, icon:
 
 // ── Main form ─────────────────────────────────────────────────
 export default function RegisterForm() {
+  const router    = useRouter()
   const nameId    = useId()
   const emailId   = useId()
   const passId    = useId()
@@ -180,8 +182,25 @@ export default function RegisterForm() {
     if (Object.keys(errs).length) { setErrors(errs); return }
     setErrors({})
     setStatus('loading')
-    await new Promise((r) => setTimeout(r, 1600))
-    setStatus('success')
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'}/auth/register`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password }),
+        }
+      )
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.message || 'Registration failed.')
+      setStatus('success')
+      // Redirect to login after 1.5s
+      setTimeout(() => router.push('/login'), 1500)
+    } catch (err: unknown) {
+      setStatus('error')
+      setGlobalError(err instanceof Error ? err.message : 'Registration failed. Please try again.')
+    }
   }
 
   return (
@@ -220,7 +239,7 @@ export default function RegisterForm() {
           >
             <CheckCircle2 size={15} className="shrink-0 mt-0.5" />
             <div>
-              <strong>Account created!</strong> Check your inbox to verify your email.
+              <strong>Account created!</strong> Redirecting to login…
             </div>
           </motion.div>
         )}

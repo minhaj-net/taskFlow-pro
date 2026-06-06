@@ -1,18 +1,22 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   getNotifications, markAsRead, markAllAsRead,
+  deleteNotification, clearAllNotifications,
 } from '@/services/notification-service'
+import { getToken } from '@/lib/auth'
 import type { Notification } from '@/types'
 
 export const notificationKeys = {
-  all:     ['notifications']            as const,
-  byUser:  (uid: string)               => ['notifications', 'user', uid] as const,
+  all:    ['notifications'] as const,
+  byUser: (uid: string) => ['notifications', 'user', uid] as const,
 }
 
-export function useNotifications(userId?: string) {
+export function useNotifications(_userId?: string) {
   return useQuery({
-    queryKey: userId ? notificationKeys.byUser(userId) : notificationKeys.all,
-    queryFn:  () => getNotifications(userId),
+    queryKey: notificationKeys.all,
+    queryFn:  () => getNotifications(),
+    enabled:  !!getToken(), // only fetch when logged in
+    refetchInterval: 30_000,
   })
 }
 
@@ -21,10 +25,9 @@ export function useMarkAsRead() {
   return useMutation({
     mutationFn: markAsRead,
     onSuccess: (_v, id) => {
-      // Optimistically update all notification caches
       qc.setQueriesData<Notification[]>(
         { queryKey: notificationKeys.all },
-        (old = []) => old.map((n) => (n.id === id ? { ...n, read: true } : n)),
+        (old = []) => old.map(n => n.id === id ? { ...n, read: true } : n),
       )
     },
   })
@@ -33,12 +36,35 @@ export function useMarkAsRead() {
 export function useMarkAllAsRead() {
   const qc = useQueryClient()
   return useMutation({
-    mutationFn: markAllAsRead,
+    mutationFn: () => markAllAsRead(),
     onSuccess: () => {
       qc.setQueriesData<Notification[]>(
         { queryKey: notificationKeys.all },
-        (old = []) => old.map((n) => ({ ...n, read: true })),
+        (old = []) => old.map(n => ({ ...n, read: true })),
       )
+    },
+  })
+}
+
+export function useDeleteNotification() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: deleteNotification,
+    onSuccess: (_v, id) => {
+      qc.setQueriesData<Notification[]>(
+        { queryKey: notificationKeys.all },
+        (old = []) => old.filter(n => n.id !== id),
+      )
+    },
+  })
+}
+
+export function useClearAllNotifications() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: clearAllNotifications,
+    onSuccess: () => {
+      qc.setQueryData<Notification[]>(notificationKeys.all, [])
     },
   })
 }

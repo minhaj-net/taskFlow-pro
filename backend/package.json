@@ -5,10 +5,15 @@
   "main": "server.js",
   "type": "commonjs",
   "scripts": {
-    "dev": "nodemon server.js",
-    "start": "node server.js"
+    "dev": "node init && nodemon server.js",
+    "start": "node init && node server.js"
   },
-  "keywords": ["express", "mongodb", "jwt", "rest-api"],
+  "keywords": [
+    "express",
+    "mongodb",
+    "jwt",
+    "rest-api"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {

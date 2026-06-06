@@ -14,7 +14,6 @@ import {
   Circle, ChevronRight, Zap, BarChart3, ClipboardList, Activity,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useRouter } from 'next/navigation'
 import { getSession } from '@/lib/auth'
 import { ROLE_DASHBOARD } from '@/types'
 
@@ -248,7 +247,6 @@ export default function HeroSection() {
   const dashboardSpring = useSpring(dashboardY, { stiffness: 80, damping: 20 })
 
   // Auth state detection
-  const router = useRouter()
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [dashboardPath, setDashboardPath] = useState('/dashboard')
 
@@ -261,10 +259,6 @@ export default function HeroSection() {
       setIsLoggedIn(false)
     }
   }, [])
-
-  const handleGetStarted = () => {
-    router.push(isLoggedIn ? dashboardPath : '/login')
-  }
 
   return (
     <section
@@ -347,7 +341,7 @@ export default function HeroSection() {
               className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-10 w-full sm:w-auto"
             >
               <Link
-                href="/signup"
+                href={isLoggedIn ? dashboardPath : '/register'}
                 className={cn(
                   'group inline-flex items-center gap-2 px-6 py-3 rounded-xl',
                   'text-sm font-semibold text-primary-foreground',
@@ -358,12 +352,12 @@ export default function HeroSection() {
                   'w-full sm:w-auto justify-center',
                 )}
               >
-                Get Started
+                {isLoggedIn ? 'Go to Dashboard' : 'Get Started'}
                 <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-200" />
               </Link>
 
               <Link
-                href="/demo"
+                href="/login"
                 className={cn(
                   'group inline-flex items-center gap-2 px-6 py-3 rounded-xl',
                   'text-sm font-semibold text-foreground',

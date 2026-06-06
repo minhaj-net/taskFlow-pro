@@ -1,35 +1,35 @@
 /**
- * routes/project.routes.js - Project CRUD routes
+ * routes/project.routes.js - Project CRUD + member management + file attachments
  */
 
 const express = require("express");
 const router = express.Router();
 
 const {
-  getAllProjects,
-  getProjectById,
-  createProject,
-  updateProject,
-  deleteProject,
-  getProjectsByMember,
+  getAllProjects, getProjectById, createProject,
+  updateProject, deleteProject, getProjectsByMember,
 } = require("../controllers/project.controller");
+
+const {
+  getFiles, getFileById, uploadFile, deleteFile,
+  addMember, removeMember,
+} = require("../controllers/projectFile.controller");
 
 const { protect } = require("../middleware/auth.middleware");
 
-// All project routes require a valid JWT
 router.use(protect);
 
-// GET  /api/projects                  — list all projects
-// POST /api/projects                  — create new project
+// ── Core CRUD ──────────────────────────────────────────────────
 router.route("/").get(getAllProjects).post(createProject);
-
-// GET  /api/projects/member/:userId   — projects for a specific member
-// NOTE: must be defined BEFORE /:id to avoid "member" being treated as an id
 router.get("/member/:userId", getProjectsByMember);
-
-// GET    /api/projects/:id            — single project
-// PUT    /api/projects/:id            — update project
-// DELETE /api/projects/:id            — delete project
 router.route("/:id").get(getProjectById).put(updateProject).delete(deleteProject);
+
+// ── Member management ──────────────────────────────────────────
+router.post("/:projectId/members",           addMember);
+router.delete("/:projectId/members/:userId", removeMember);
+
+// ── File attachments ───────────────────────────────────────────
+router.route("/:projectId/files").get(getFiles).post(uploadFile);
+router.route("/:projectId/files/:fileId").get(getFileById).delete(deleteFile);
 
 module.exports = router;

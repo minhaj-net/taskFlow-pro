@@ -275,7 +275,7 @@ export default function DashboardPreviewSection() {
 
             <motion.div {...fadeUp(0.4)} className="flex flex-wrap gap-3">
               <a
-                href="/signup"
+                href="/register"
                 className={cn(
                   'inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-primary-foreground',
                   'bg-gradient-to-r from-primary to-tf-emerald',
@@ -288,7 +288,7 @@ export default function DashboardPreviewSection() {
                 <ArrowUpRight size={15} />
               </a>
               <a
-                href="/demo"
+                href="/login"
                 className={cn(
                   'inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold',
                   'text-foreground border border-border bg-card',

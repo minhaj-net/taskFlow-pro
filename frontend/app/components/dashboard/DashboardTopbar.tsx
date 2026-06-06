@@ -33,11 +33,11 @@ export default function DashboardTopbar({ user, unreadCount = 0, onMobileMenuOpe
 
   const initials = user.name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()
 
-  const roleColor = {
+  const roleColor = ({
     admin:   'bg-danger/15   text-danger',
     manager: 'bg-warning/15  text-warning',
     member:  'bg-info/15     text-info',
-  }[user.role]
+  } as Record<string, string>)[user.role] ?? 'bg-muted text-muted-foreground'
 
   return (
     <header className="h-16 border-b border-border bg-card flex items-center gap-3 px-4 sm:px-6 shrink-0">
@@ -116,7 +116,7 @@ export default function DashboardTopbar({ user, unreadCount = 0, onMobileMenuOpe
             </div>
             <div className="hidden sm:block text-left">
               <div className="text-xs font-semibold text-foreground leading-none">{user.name.split(' ')[0]}</div>
-              <div className={cn('text-[10px] font-medium leading-none mt-0.5 capitalize', roleColor.split(' ')[1])}>
+              <div className={cn('text-[10px] font-medium leading-none mt-0.5 capitalize', roleColor.split(' ')[1] ?? '')}>
                 {user.role}
               </div>
             </div>

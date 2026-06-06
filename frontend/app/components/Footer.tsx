@@ -25,10 +25,11 @@ const quickLinks = [
 ]
 
 const resourceLinks = [
-  { label: 'Documentation', href: '/docs' },
-  { label: 'Help Center', href: '/help' },
-  { label: 'Privacy Policy', href: '/privacy' },
-  { label: 'Terms & Conditions', href: '/terms' },
+  { label: 'Privacy Policy',    href: '/privacy'   },
+  { label: 'Terms of Service',  href: '/terms'     },
+  { label: 'Features',          href: '/features'  },
+  { label: 'Pricing',           href: '/pricing'   },
+  { label: 'About Us',          href: '/about'     },
 ]
 
 const socialLinks = [
@@ -304,11 +305,11 @@ export default function Footer() {
 
           {/* Bottom nav */}
           <nav aria-label="Legal navigation" className="flex items-center gap-4">
-            {[
-              { label: 'Privacy', href: '/privacy' },
-              { label: 'Terms', href: '/terms' },
-              { label: 'Cookies', href: '/cookies' },
-            ].map(({ label, href }) => (
+              {[
+                { label: 'Privacy', href: '/privacy' },
+                { label: 'Terms',   href: '/terms'   },
+                { label: 'Contact', href: '/contact' },
+              ].map(({ label, href }) => (
               <Link
                 key={label}
                 href={href}

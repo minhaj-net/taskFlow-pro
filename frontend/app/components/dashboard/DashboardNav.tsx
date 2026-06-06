@@ -21,7 +21,7 @@ export interface NavItem {
 
 export function getNavItems(role: Role): NavItem[] {
   if (role === 'admin') return [
-    { label: 'Dashboard',     href: '/',                          icon: LayoutDashboard, exact: true },
+    { label: 'Dashboard',     href: '/dashboard/admin',                          icon: LayoutDashboard, exact: true },
     { label: 'Projects',      href: '/dashboard/projects',        icon: FolderKanban  },
     { label: 'Tasks',         href: '/dashboard/tasks',           icon: CheckSquare   },
     { label: 'Team',          href: '/dashboard/team',            icon: Users         },
@@ -34,7 +34,7 @@ export function getNavItems(role: Role): NavItem[] {
   ]
 
   if (role === 'manager') return [
-    { label: 'Dashboard',     href: '/',                          icon: LayoutDashboard, exact: true },
+    { label: 'Dashboard',     href: '/dashboard/manager',                          icon: LayoutDashboard, exact: true },
     { label: 'Projects',      href: '/dashboard/projects',        icon: FolderKanban  },
     { label: 'Tasks',         href: '/dashboard/tasks',           icon: CheckSquare   },
     { label: 'Team',          href: '/dashboard/team',            icon: Users         },
@@ -47,7 +47,7 @@ export function getNavItems(role: Role): NavItem[] {
 
   // member
   return [
-    { label: 'Dashboard',     href: '/',                          icon: LayoutDashboard, exact: true },
+    { label: 'Dashboard',     href: '/dashboard/member',                          icon: LayoutDashboard, exact: true },
     { label: 'My Tasks',      href: '/dashboard/tasks',           icon: CheckSquare   },
     { label: 'My Projects',   href: '/dashboard/projects',        icon: FolderKanban  },
     { label: 'Notifications', href: '/dashboard/notifications',   icon: Bell          },

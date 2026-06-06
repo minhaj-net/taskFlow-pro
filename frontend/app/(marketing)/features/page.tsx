@@ -80,7 +80,7 @@ function FeatureHero() {
             Get Started Free
             <ArrowRight size={15} />
           </Link>
-          <Link href="/"
+          <Link href="/dashboard/team"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-foreground border border-border bg-card hover:bg-muted hover:-translate-y-0.5 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
             See Live Demo
           </Link>
